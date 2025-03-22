@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - EV Rental</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+        .profile-header {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .profile-stats {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .profile-section {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        .stat-card h3 {
+            color: #0d6efd;
+            margin-bottom: 0.5rem;
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+        .alert {
+            display: none;
+            margin-bottom: 1rem;
+        }
+        .kyc-status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .status-pending {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+        .status-verified {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .document-preview {
+            max-width: 300px;
+            max-height: 200px;
+            border: 2px dashed #dee2e6;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .document-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .upload-placeholder {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+        .img-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+        }
+        .badge {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">EV Rental</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="rentals.html">Rent EVs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="bookings.html">My Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reviews.html">Reviews</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="profile.html">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Content -->
+    <div class="container profile-container">
+        <!-- Alert Messages -->
+        <div class="alert alert-danger" id="errorAlert" role="alert"></div>
+        <div class="alert alert-success" id="successAlert" role="alert"></div>
+
+        <!-- Profile Header -->
+        <div class="profile-header text-center">
+            <img src="images/default-avatar.png" alt="Profile Picture" class="profile-avatar" id="profileAvatar">
+            <h2 id="userName">Loading...</h2>
+            <p class="text-muted mb-0" id="userEmail">Loading...</p>
+            <p class="text-muted" id="userId">Member since: Loading...</p>
+        </div>
+
+        <!-- Profile Stats -->
+        <div class="profile-stats">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <h3 id="totalBookings">0</h3>
+                        <p class="mb-0">Total Bookings</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <h3 id="activeBookings">0</h3>
+                        <p class="mb-0">Active Bookings</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <h3 id="totalReviews">0</h3>
+                        <p class="mb-0">Reviews Given</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-section">
+                    <h5 class="mb-4">Personal Information</h5>
+                    <form id="profileForm">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="phone" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <!-- KYC Verification Section -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">KYC Verification</h5>
+                        <div id="kycStatus"></div>
+                    </div>
+                    <div class="card-body">
+                        <!-- KYC Status Info -->
+                        <div id="kycStatusInfo" style="display: none;"></div>
+
+                        <!-- KYC Form -->
+                        <form id="kycForm" class="needs-validation" novalidate>
+                            <!-- Personal Details -->
+                            <h6 class="mb-3">Personal Details</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-control" id="dob" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Gender</label>
+                                    <select class="form-select" id="gender" required>
+                                        <option value="">Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <textarea class="form-control" id="address" rows="2" required></textarea>
+                            </div>
+
+                            <!-- ID Proof -->
+                            <h6 class="mb-3">ID Proof</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">ID Type</label>
+                                    <select class="form-select" id="idType" required>
+                                        <option value="">Select ID Type</option>
+                                        <option value="aadhar">Aadhar Card</option>
+                                        <option value="pan">PAN Card</option>
+                                        <option value="passport">Passport</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">ID Number</label>
+                                    <input type="text" class="form-control" id="idNumber" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">ID Front</label>
+                                    <input type="file" class="form-control" id="idFront" accept="image/*" required>
+                                    <img id="idFrontPreview" class="img-preview mt-2" style="display: none;">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">ID Back</label>
+                                    <input type="file" class="form-control" id="idBack" accept="image/*" required>
+                                    <img id="idBackPreview" class="img-preview mt-2" style="display: none;">
+                                </div>
+                            </div>
+
+                            <!-- Driver's License -->
+                            <h6 class="mb-3">Driver's License</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">License Number</label>
+                                    <input type="text" class="form-control" id="licenseNumber" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="date" class="form-control" id="licenseExpiry" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">License Front</label>
+                                    <input type="file" class="form-control" id="licenseFront" accept="image/*" required>
+                                    <img id="licenseFrontPreview" class="img-preview mt-2" style="display: none;">
+                                </div>
+                            <div class="mb-3">
+                                <label class="form-label">Upload License (Front)</label>
+                                <input type="file" class="form-control" id="licenseFront" accept="image/*" required>
+                                <div class="document-preview" id="licenseFrontPreview">
+                                    <div class="upload-placeholder">
+                                        <i class="fas fa-upload"></i>
+                                        <p class="mb-0">Click to upload front side</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Upload License (Back)</label>
+                                <input type="file" class="form-control" id="licenseBack" accept="image/*" required>
+                                <div class="document-preview" id="licenseBackPreview">
+                                    <div class="upload-placeholder">
+                                        <i class="fas fa-upload"></i>
+                                        <p class="mb-0">Click to upload back side</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selfie Verification -->
+                        <div class="mb-4">
+                            <h6>Selfie Verification</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Upload Selfie</label>
+                                <input type="file" class="form-control" id="selfie" accept="image/*" required>
+                                <div class="document-preview" id="selfiePreview">
+                                    <div class="upload-placeholder">
+                                        <i class="fas fa-upload"></i>
+                                        <p class="mb-0">Click to upload selfie</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="termsAccepted" required>
+                            <label class="form-check-label" for="termsAccepted">
+                                I declare that all the information provided is true and accurate
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="submitKyc">Submit KYC</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>We provide eco-friendly electric vehicle rentals for a sustainable future.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-light">Home</a></li>
+                        <li><a href="rentals.html" class="text-light">Rent EVs</a></li>
+                        <li><a href="reviews.html" class="text-light">Reviews</a></li>
+                        <li><a href="#" class="text-light">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Us</h5>
+                    <p>Email: support@evrental.com<br>Phone: +91 1234567890</p>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p class="mb-0">&copy; 2024 EV Rental. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+    <!-- Custom JS -->
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/kyc.js"></script>
+    <script src="js/kyc-submission.js"></script>
+</body>
+</html> 

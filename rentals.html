@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent EVs - EV Rental</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        .vehicle-card {
+            transition: transform 0.2s;
+        }
+        .vehicle-card:hover {
+            transform: translateY(-5px);
+        }
+        .cost-breakdown {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .cost-breakdown .row {
+            margin-bottom: 0.5rem;
+        }
+        .cost-breakdown .total {
+            border-top: 2px solid #dee2e6;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            font-weight: bold;
+        }
+        .alert {
+            display: none;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">EV Rental</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="rentals.html">Rent EVs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="bookings.html">My Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reviews.html">Reviews</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <!-- Alert Messages -->
+        <div class="alert alert-danger" id="errorAlert" role="alert"></div>
+        <div class="alert alert-success" id="successAlert" role="alert"></div>
+
+        <!-- Vehicle Type Filter -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Filter Vehicles</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Vehicle Type</label>
+                        <select class="form-select" id="vehicleTypeFilter">
+                            <option value="all">All Vehicles</option>
+                            <option value="Scooter">EV Scooter</option>
+                            <option value="Bike">EV Bike</option>
+                            <option value="Car">EV Car</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Rental Duration</label>
+                        <select class="form-select" id="rentalDurationFilter">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly (7% off)</option>
+                            <option value="monthly">Monthly (15% off)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">&nbsp;</label>
+                        <button class="btn btn-primary w-100" onclick="applyFilters()">Apply Filters</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicles Grid -->
+        <div class="row" id="vehicleContainer">
+            <!-- Vehicles will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal fade" id="bookingModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Book <span id="modalVehicleName"></span>
+                        <small class="text-muted">(<span id="modalVehicleType"></span>)</small>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bookingForm" onsubmit="handleBooking(event)">
+                        <!-- Rental Period -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="startDate" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="endDate" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Start Time</label>
+                                <input type="time" class="form-control" id="startTime" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">End Time</label>
+                                <input type="time" class="form-control" id="endTime" required>
+                            </div>
+                        </div>
+
+                        <!-- Locations -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Pickup Location</label>
+                                <input type="text" class="form-control" id="pickupLocation" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Drop-off Location</label>
+                                <input type="text" class="form-control" id="dropoffLocation" required>
+                            </div>
+                        </div>
+
+                        <!-- Driver License -->
+                        <div class="mb-3">
+                            <label class="form-label">Driver License Number</label>
+                            <input type="text" class="form-control" id="driverLicense" required>
+                        </div>
+
+                        <!-- Cost Breakdown -->
+                        <div class="cost-breakdown">
+                            <h6 class="mb-3">Cost Breakdown</h6>
+                            <div class="row">
+                                <div class="col-8">Daily Rate:</div>
+                                <div class="col-4 text-end" id="modalDailyRate">₹0</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">Duration:</div>
+                                <div class="col-4 text-end">
+                                    <span id="rentalDays">0</span> days,
+                                    <span id="rentalHours">0</span> hours
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">Base Cost:</div>
+                                <div class="col-4 text-end" id="baseCost">₹0</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">Insurance (15%):</div>
+                                <div class="col-4 text-end" id="insurance">₹0</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">Tax (18%):</div>
+                                <div class="col-4 text-end" id="tax">₹0</div>
+                            </div>
+                            <div class="row total">
+                                <div class="col-8">Total Cost:</div>
+                                <div class="col-4 text-end" id="totalCost">₹0</div>
+                            </div>
+                            <div class="alert alert-success mt-2" id="savingsInfo" style="display: none;"></div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" id="termsAccepted" required>
+                            <label class="form-check-label" for="termsAccepted">
+                                I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms and Conditions</a>
+                            </label>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms and Conditions Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Terms and Conditions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>1. Rental Requirements</h6>
+                    <ul>
+                        <li>Valid driver's license required</li>
+                        <li>Minimum age: 18 years</li>
+                        <li>Security deposit required</li>
+                        <li>Credit/Debit card for payment</li>
+                    </ul>
+
+                    <h6>2. Insurance Coverage</h6>
+                    <ul>
+                        <li>Basic insurance included in rental cost</li>
+                        <li>Additional coverage available</li>
+                        <li>Damage liability up to ₹10,000</li>
+                    </ul>
+
+                    <h6>3. Cancellation Policy</h6>
+                    <ul>
+                        <li>Free cancellation up to 24 hours before pickup</li>
+                        <li>50% refund for cancellations within 24 hours</li>
+                        <li>No refund for no-shows</li>
+                    </ul>
+
+                    <h6>4. Vehicle Usage</h6>
+                    <ul>
+                        <li>Vehicle must be returned with full charge</li>
+                        <li>No smoking in vehicles</li>
+                        <li>No pets allowed</li>
+                        <li>Maximum daily mileage: 200 km</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I Understand</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>We provide eco-friendly electric vehicle rentals for a sustainable future.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-light">Home</a></li>
+                        <li><a href="rentals.html" class="text-light">Rent EVs</a></li>
+                        <li><a href="reviews.html" class="text-light">Reviews</a></li>
+                        <li><a href="#" class="text-light">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Us</h5>
+                    <p>Email: support@evrental.com<br>Phone: +91 1234567890</p>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p class="mb-0">&copy; 2024 EV Rental. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/auth.js"></script>
+    <script src="js/rentals.js"></script>
+</body>
+</html> 
