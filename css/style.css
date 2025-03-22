@@ -6,7 +6,7 @@ body {
 /* Hero Section */
 .hero-section {
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-                url('../images/hero-bg.jpg') center/cover no-repeat;
+                url('../Car-image-5.jpg') center/cover no-repeat;
     height: 100vh;
     display: flex;
     align-items: center;
