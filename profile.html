@@ -26,11 +26,11 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .profile-section {
-            background: #fff;
+            background: white;
+            padding: 1.5rem;
             border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .stat-card {
             text-align: center;
@@ -53,55 +53,21 @@
             display: none;
             margin-bottom: 1rem;
         }
-        .kyc-status {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .status-pending {
-            background-color: #ffeeba;
-            color: #856404;
-        }
-        .status-verified {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .status-rejected {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        .document-preview {
-            max-width: 300px;
-            max-height: 200px;
-            border: 2px dashed #dee2e6;
-            border-radius: 5px;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .document-preview img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        .upload-placeholder {
-            text-align: center;
-            padding: 20px;
-            color: #6c757d;
-        }
         .img-preview {
             max-width: 200px;
             max-height: 200px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 5px;
+            display: none;
+            margin-top: 10px;
         }
-        .badge {
-            font-size: 1rem;
-            padding: 0.5rem 1rem;
+        .upload-box {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .upload-box:hover {
+            border-color: #0d6efd;
         }
     </style>
 </head>
@@ -178,154 +144,143 @@
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="row">
-            <div class="col-md-4">
-                <div class="profile-section">
-                    <h5 class="mb-4">Personal Information</h5>
-                    <form id="profileForm">
-                        <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="fullName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Phone</label>
-                            <input type="tel" class="form-control" id="phone" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Update Profile</button>
-                    </form>
-                </div>
-            </div>
+        <!-- KYC Verification Status -->
+        <div class="profile-section">
+            <h3 class="mb-4">KYC Verification Status</h3>
+            <div id="kycStatus"></div>
+        </div>
 
-            <div class="col-md-8">
-                <!-- KYC Verification Section -->
-                <div class="card mb-4">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">KYC Verification</h5>
-                        <div id="kycStatus"></div>
-                    </div>
-                    <div class="card-body">
-                        <!-- KYC Status Info -->
-                        <div id="kycStatusInfo" style="display: none;"></div>
-
-                        <!-- KYC Form -->
-                        <form id="kycForm" class="needs-validation" novalidate>
-                            <!-- Personal Details -->
-                            <h6 class="mb-3">Personal Details</h6>
-                            <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">Date of Birth</label>
-                                    <input type="date" class="form-control" id="dob" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Gender</label>
-                                    <select class="form-select" id="gender" required>
-                                        <option value="">Select Gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
+        <!-- KYC Form -->
+        <div class="profile-section">
+            <h3 class="mb-4">KYC Verification Form</h3>
+            <form id="kycForm" class="mt-4">
+                <!-- Personal Details -->
+                <div class="mb-4">
+                    <h6>Personal Details</h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="dob" required>
                             </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Gender</label>
+                                <select class="form-select" id="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">Address</label>
-                                <textarea class="form-control" id="address" rows="2" required></textarea>
-                            </div>
-
-                            <!-- ID Proof -->
-                            <h6 class="mb-3">ID Proof</h6>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">ID Type</label>
-                                    <select class="form-select" id="idType" required>
-                                        <option value="">Select ID Type</option>
-                                        <option value="aadhar">Aadhar Card</option>
-                                        <option value="pan">PAN Card</option>
-                                        <option value="passport">Passport</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">ID Number</label>
-                                    <input type="text" class="form-control" id="idNumber" required>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">ID Front</label>
-                                    <input type="file" class="form-control" id="idFront" accept="image/*" required>
-                                    <img id="idFrontPreview" class="img-preview mt-2" style="display: none;">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">ID Back</label>
-                                    <input type="file" class="form-control" id="idBack" accept="image/*" required>
-                                    <img id="idBackPreview" class="img-preview mt-2" style="display: none;">
-                                </div>
-                            </div>
-
-                            <!-- Driver's License -->
-                            <h6 class="mb-3">Driver's License</h6>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">License Number</label>
-                                    <input type="text" class="form-control" id="licenseNumber" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Expiry Date</label>
-                                    <input type="date" class="form-control" id="licenseExpiry" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Upload License (Front)</label>
-                                <input type="file" class="form-control" id="licenseFront" accept="image/*" required>
-                                <div class="document-preview" id="licenseFrontPreview">
-                                    <div class="upload-placeholder">
-                                        <i class="fas fa-upload"></i>
-                                        <p class="mb-0">Click to upload front side</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Upload License (Back)</label>
-                                <input type="file" class="form-control" id="licenseBack" accept="image/*" required>
-                                <div class="document-preview" id="licenseBackPreview">
-                                    <div class="upload-placeholder">
-                                        <i class="fas fa-upload"></i>
-                                        <p class="mb-0">Click to upload back side</p>
-                                    </div>
-                                </div>
+                                <textarea class="form-control" id="address" rows="3" required></textarea>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Selfie Verification -->
-                        <div class="mb-4">
-                            <h6>Selfie Verification</h6>
+                <!-- ID Proof -->
+                <div class="mb-4">
+                    <h6>ID Proof</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">ID Type</label>
+                                <select class="form-select" id="idType" required>
+                                    <option value="">Select ID Type</option>
+                                    <option value="aadhar">Aadhar Card</option>
+                                    <option value="pan">PAN Card</option>
+                                    <option value="passport">Passport</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">ID Number</label>
+                                <input type="text" class="form-control" id="idNumber" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">ID Front</label>
+                                <div class="upload-box" onclick="document.getElementById('idFront').click()">
+                                    <i class="bi bi-upload"></i> Click to upload ID front
+                                </div>
+                                <input type="file" id="idFront" accept="image/*" style="display: none" required>
+                                <img id="idFrontPreview" class="img-preview">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">ID Back</label>
+                                <div class="upload-box" onclick="document.getElementById('idBack').click()">
+                                    <i class="bi bi-upload"></i> Click to upload ID back
+                                </div>
+                                <input type="file" id="idBack" accept="image/*" style="display: none" required>
+                                <img id="idBackPreview" class="img-preview">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Driver's License -->
+                <div class="mb-4">
+                    <h6>Driver's License</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">License Number</label>
+                                <input type="text" class="form-control" id="licenseNumber" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">License Expiry Date</label>
+                                <input type="date" class="form-control" id="licenseExpiry" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">License Front</label>
+                                <div class="upload-box" onclick="document.getElementById('licenseFront').click()">
+                                    <i class="bi bi-upload"></i> Click to upload license front
+                                </div>
+                                <input type="file" id="licenseFront" accept="image/*" style="display: none" required>
+                                <img id="licenseFrontPreview" class="img-preview">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">License Back</label>
+                                <div class="upload-box" onclick="document.getElementById('licenseBack').click()">
+                                    <i class="bi bi-upload"></i> Click to upload license back
+                                </div>
+                                <input type="file" id="licenseBack" accept="image/*" style="display: none" required>
+                                <img id="licenseBackPreview" class="img-preview">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selfie Verification -->
+                <div class="mb-4">
+                    <h6>Selfie Verification</h6>
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Upload Selfie</label>
-                                <input type="file" class="form-control" id="selfie" accept="image/*" required>
-                                <div class="document-preview" id="selfiePreview">
-                                    <div class="upload-placeholder">
-                                        <i class="fas fa-upload"></i>
-                                        <p class="mb-0">Click to upload selfie</p>
-                                    </div>
+                                <div class="upload-box" onclick="document.getElementById('selfie').click()">
+                                    <i class="bi bi-upload"></i> Click to upload selfie
                                 </div>
+                                <input type="file" id="selfie" accept="image/*" style="display: none" required>
+                                <img id="selfiePreview" class="img-preview">
                             </div>
                         </div>
-
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="termsAccepted" required>
-                            <label class="form-check-label" for="termsAccepted">
-                                I declare that all the information provided is true and accurate
-                            </label>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary" id="submitKyc">Submit KYC</button>
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit KYC</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -357,13 +312,16 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS and dependencies -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
-    <!-- Custom JS -->
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-database.js"></script>
+    <!-- Application Scripts -->
     <script src="js/auth.js"></script>
-    <script src="js/profile.js"></script>
-    <script src="js/kyc.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/jwt-utils.js"></script>
     <script src="js/kyc-submission.js"></script>
 </body>
 </html> 
